@@ -7,12 +7,10 @@
 
 #define LOG(...) Qv2ray::base::log_internal(__VA_ARGS__)
 #define DEBUG(...) Qv2ray::base::log_internal(__VA_ARGS__)
-namespace Qv2ray {
-    namespace base {
+namespace Qv2ray::base {
         template<typename... T>
         inline void log_internal(T... v) {}
-    } // namespace base
-} // namespace Qv2ray
+} // namespace Qv2ray::base
 
 #define JsonToString(a) QJsonObject2QString(a, false)
 #define JsonFromString(a) QString2QJsonObject(a)
@@ -33,9 +31,9 @@ inline QString VerifyJsonString(const QString &source) {
 
 #define RED(obj)                                 \
     {                                            \
-        auto _temp = obj->palette();             \
+        auto _temp = obj->palette(); /* NOLINT */\
         _temp.setColor(QPalette::Text, Qt::red); \
-        obj->setPalette(_temp);                  \
+        obj->setPalette(_temp); /* NOLINT */     \
     }
 
 #define BLACK(obj) obj->setPalette(QWidget::palette());

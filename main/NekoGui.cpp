@@ -18,9 +18,11 @@
 #include <unistd.h>
 #endif
 
+#include <cmath>
+
 namespace NekoGui_ConfigItem {
 
-    // 添加关联
+    // Add association
     void JsonStore::_add(configItem *item) {
         _map.insert(item->name, std::shared_ptr<configItem>(item));
     }
@@ -32,15 +34,14 @@ namespace NekoGui_ConfigItem {
         return {};
     }
 
-    std::shared_ptr<configItem> JsonStore::_get(const QString &name) {
-        // 直接 [] 会设置一个 nullptr ，所以先判断是否存在
-        if (_map.contains(name)) {
-            return _map[name];
+    std::shared_ptr<configItem> JsonStore::_get(const QString &name) const {
+        if (const auto it = _map.constFind(name); it != _map.constEnd()) {
+            return it.value();
         }
         return nullptr;
     }
 
-    void JsonStore::_setValue(const QString &name, void *p) {
+    void JsonStore::_setValue(const QString &name, void *p) const {
         auto item = _get(name);
         if (item == nullptr) return;
 
@@ -65,7 +66,7 @@ namespace NekoGui_ConfigItem {
         }
     }
 
-    QJsonObject JsonStore::ToJson(const QStringList &without) {
+    QJsonObject JsonStore::ToJson(const QStringList &without) const {
         QJsonObject object;
         for (const auto &_item: _map) {
             auto item = _item.get();
@@ -93,7 +94,7 @@ namespace NekoGui_ConfigItem {
                     object.insert(item->name, QList2QJsonArray<int>(*(QList<int> *) item->ptr));
                     break;
                 case itemType::jsonStore:
-                    // _add 时应关联对应 JsonStore 的指针
+                    // When it should be associated with the corresponding JsonStore pointer
                     object.insert(item->name, ((JsonStore *) item->ptr)->ToJson());
                     break;
             }
@@ -101,7 +102,7 @@ namespace NekoGui_ConfigItem {
         return object;
     }
 
-    QByteArray JsonStore::ToJsonBytes() {
+    QByteArray JsonStore::ToJsonBytes() const {
         QJsonDocument document;
         document.setObject(ToJson());
         return document.toJson(save_control_compact ? QJsonDocument::Compact : QJsonDocument::Indented);
@@ -137,7 +138,7 @@ namespace NekoGui_ConfigItem {
                     if (value.type() != QJsonValue::Double) {
                         continue;
                     }
-                    *(long long *) item->ptr = value.toDouble();
+                    *(qint64 *) item->ptr = static_cast<qint64>(std::round(value.toDouble()));
                     break;
                 case itemType::boolean:
                     if (value.type() != QJsonValue::Bool) {
@@ -173,7 +174,7 @@ namespace NekoGui_ConfigItem {
         QJsonParseError error{};
         auto document = QJsonDocument::fromJson(data, &error);
 
-        if (error.error != error.NoError) {
+        if (error.error != QJsonParseError::NoError) {
             qDebug() << "QJsonParseError" << error.errorString();
             return;
         }

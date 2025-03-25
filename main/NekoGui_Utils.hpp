@@ -1,12 +1,11 @@
-// DO NOT INCLUDE THIS
+#pragma once
 
-#include <functional>
-#include <memory>
 #include <QObject>
 #include <QString>
 #include <QDebug>
 
-//
+#include <functional>
+#include <memory>
 
 inline QString software_name = "NekoBox";
 inline QString software_core_name = "sing-box";
@@ -36,31 +35,31 @@ inline std::function<void(int)> TM_auto_update_subsctiption_Reset_Minute;
 
 // String
 
-#define FIRST_OR_SECOND(a, b) a.isEmpty() ? b : a
+#define FIRST_OR_SECOND(a, b) a.isEmpty() ? (b) : (a)
 
 inline const QString UNICODE_LRO = QString::fromUtf8(QByteArray::fromHex("E280AD"));
 
 #define Int2String(num) QString::number(num)
 
-inline QString SubStrBefore(QString str, const QString &sub) {
+[[nodiscard]] inline QString SubStrBefore(QString str, const QString &sub) {
     if (!str.contains(sub)) return str;
     return str.left(str.indexOf(sub));
 }
 
-inline QString SubStrAfter(QString str, const QString &sub) {
+[[nodiscard]] inline QString SubStrAfter(QString str, const QString &sub) {
     if (!str.contains(sub)) return str;
     return str.right(str.length() - str.indexOf(sub) - sub.length());
 }
 
-QString QStringList2Command(const QStringList &list);
+[[nodiscard]] QString QStringList2Command(const QStringList &list);
 
-QStringList SplitLines(const QString &_string);
+[[nodiscard]] QStringList SplitLines(const QString &_string);
 
-QStringList SplitLinesSkipSharp(const QString &_string, int maxLine = 0);
+[[nodiscard]] QStringList SplitLinesSkipSharp(const QString &_string, int maxLine = 0);
 
 // Base64
 
-QByteArray DecodeB64IfValid(const QString &input, QByteArray::Base64Options options = QByteArray::Base64Option::Base64Encoding);
+[[nodiscard]] QByteArray DecodeB64IfValid(const QString &input, QByteArray::Base64Options options = QByteArray::Base64Option::Base64Encoding);
 
 // URL
 
@@ -68,86 +67,86 @@ class QUrlQuery;
 
 #define GetQuery(url) QUrlQuery((url).query(QUrl::ComponentFormattingOption::FullyDecoded));
 
-QString GetQueryValue(const QUrlQuery &q, const QString &key, const QString &def = "");
+[[nodiscard]] QString GetQueryValue(const QUrlQuery &q, const QString &key, const QString &def = "");
 
-QString GetRandomString(int randomStringLength);
+[[nodiscard]] QString GetRandomString(int randomStringLength);
 
-quint64 GetRandomUint64();
+[[nodiscard]] quint64 GetRandomUint64();
 
 // JSON
 
 class QJsonObject;
 class QJsonArray;
 
-QJsonObject QString2QJsonObject(const QString &jsonString);
+[[nodiscard]] QJsonObject QString2QJsonObject(const QString &jsonString);
 
-QString QJsonObject2QString(const QJsonObject &jsonObject, bool compact);
+[[nodiscard]] QString QJsonObject2QString(const QJsonObject &jsonObject, bool compact);
 
 template<typename T>
-QJsonArray QList2QJsonArray(const QList<T> &list);
+[[nodiscard]] QJsonArray QList2QJsonArray(const QList<T> &list);
 
-QList<int> QJsonArray2QListInt(const QJsonArray &arr);
+[[nodiscard]] QList<int> QJsonArray2QListInt(const QJsonArray &arr);
 
 #define QJSONARRAY_ADD(arr, add) \
     for (const auto &a: (add)) { \
         (arr) += a;              \
     }
 #define QJSONOBJECT_COPY(src, dst, key) \
-    if (src.contains(key)) dst[key] = src[key];
+    if (src.contains(key)) dst[key] = src[key]; // NOLINT
 #define QJSONOBJECT_COPY2(src, dst, src_key, dst_key) \
-    if (src.contains(src_key)) dst[dst_key] = src[src_key];
+    if (src.contains(src_key)) dst[dst_key] = src[src_key]; // NOLINT
 
-QList<QString> QJsonArray2QListString(const QJsonArray &arr);
+[[nodiscard]] QList<QString> QJsonArray2QListString(const QJsonArray &arr);
 
 // Files
 
-QByteArray ReadFile(const QString &path);
+[[nodiscard]] QByteArray ReadFile(const QString &path);
 
-QString ReadFileText(const QString &path);
+[[nodiscard]] QString ReadFileText(const QString &path);
 
 // Validators
 
-bool IsIpAddress(const QString &str);
+[[nodiscard]] bool IsIpAddress(const QString &str);
 
-bool IsIpAddressV4(const QString &str);
+[[nodiscard]] bool IsIpAddressV4(const QString &str);
 
-bool IsIpAddressV6(const QString &str);
+[[nodiscard]] bool IsIpAddressV6(const QString &str);
 
 // [2001:4860:4860::8888] -> 2001:4860:4860::8888
-inline QString UnwrapIPV6Host(QString &str) {
+[[nodiscard]] inline QString UnwrapIPV6Host(QString &str) {
     return str.replace("[", "").replace("]", "");
 }
 
 // [2001:4860:4860::8888] or 2001:4860:4860::8888 -> [2001:4860:4860::8888]
-inline QString WrapIPV6Host(QString &str) {
+[[nodiscard]] inline QString WrapIPV6Host(QString &str) {
     if (!IsIpAddressV6(str)) return str;
     return "[" + UnwrapIPV6Host(str) + "]";
 }
 
-inline QString DisplayAddress(QString serverAddress, int serverPort) {
+[[nodiscard]] inline QString DisplayAddress(QString serverAddress, int serverPort) {
     if (serverAddress.isEmpty() && serverPort == 0) return {};
     return WrapIPV6Host(serverAddress) + ":" + Int2String(serverPort);
 };
 
 // Format & Misc
 
-int MkPort();
+[[nodiscard]] int MkPort();
 
-QString DisplayTime(long long time, int formatType = 0);
+[[nodiscard]] QString DisplayTime(long long time, int formatType = 0);
 
-QString ReadableSize(const qint64 &size);
+[[nodiscard]] QString ReadableSize(const qint64 &size);
 
-inline bool InRange(unsigned x, unsigned low, unsigned high) {
+[[nodiscard]] inline bool InRange(unsigned x, unsigned low, unsigned high) {
     return (low <= x && x <= high);
 }
 
-inline bool IsValidPort(int port) {
+[[nodiscard]] inline bool IsValidPort(int port) {
     return InRange(port, 1, 65535);
 }
 
 // UI
 
-QWidget *GetMessageBoxParent();
+[[nodiscard]] QWidget *GetMessageBoxParent();
 
 int MessageBoxWarning(const QString &title, const QString &text);
 

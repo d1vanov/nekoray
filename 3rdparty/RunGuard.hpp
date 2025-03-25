@@ -8,7 +8,7 @@
 
 class RunGuard {
 public:
-    RunGuard(const QString &key);
+    explicit RunGuard(const QString &key);
 
     ~RunGuard();
 
@@ -31,7 +31,7 @@ private:
 
 namespace {
 
-    QString generateKeyHash(const QString &key, const QString &salt) {
+    [[nodiscard]] QString generateKeyHash(const QString &key, const QString &salt) {
         QByteArray data;
 
         data.append(key.toUtf8());

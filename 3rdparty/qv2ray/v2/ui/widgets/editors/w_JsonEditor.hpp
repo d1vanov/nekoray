@@ -13,7 +13,7 @@ class JsonEditor
 
 public:
     explicit JsonEditor(const QJsonObject& rootObject, QWidget* parent = nullptr);
-    ~JsonEditor();
+    ~JsonEditor() override;
     QJsonObject OpenEditor();
 
 private slots:

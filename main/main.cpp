@@ -19,9 +19,9 @@
 #endif
 
 void signal_handler(int signum) {
-    if (qApp) {
+    if (QCoreApplication::instance()) {
         GetMainWindow()->on_commitDataRequest();
-        qApp->exit();
+        QCoreApplication::exit();
     }
 }
 

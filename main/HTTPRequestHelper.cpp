@@ -44,7 +44,7 @@ namespace NekoGui_network {
             c.setPeerVerifyMode(QSslSocket::PeerVerifyMode::VerifyNone);
             request.setSslConfiguration(c);
         }
-        //
+
         auto _reply = accessManager.get(request);
         connect(_reply, &QNetworkReply::sslErrors, _reply, [](const QList<QSslError> &errors) {
             QStringList error_str;
@@ -68,7 +68,7 @@ namespace NekoGui_network {
             abortTimer->stop();
             abortTimer->deleteLater();
         }
-        //
+
         auto result = NekoHTTPResponse{_reply->error() == QNetworkReply::NetworkError::NoError ? "" : _reply->errorString(),
                                        _reply->readAll(), _reply->rawHeaderPairs()};
         _reply->deleteLater();

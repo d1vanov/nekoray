@@ -1,7 +1,14 @@
-// DO NOT INCLUDE THIS
+#pragma once
+
+#include <QJsonObject>
+#include <QMap>
+#include <QString>
+
+#include <functional>
+#include <memory>
 
 namespace NekoGui_ConfigItem {
-    // config 工具
+    // config tool
     enum itemType {
         string,
         integer,
@@ -25,7 +32,7 @@ namespace NekoGui_ConfigItem {
         }
     };
 
-    // 可格式化对象
+    // Formatable objects
     class JsonStore {
     public:
         QMap<QString, std::shared_ptr<configItem>> _map;
@@ -47,15 +54,15 @@ namespace NekoGui_ConfigItem {
 
         void _add(configItem *item);
 
-        QString _name(void *p);
+        [[nodiscard]] QString _name(void *p);
 
-        std::shared_ptr<configItem> _get(const QString &name);
+        [[nodiscard]] std::shared_ptr<configItem> _get(const QString &name) const;
 
-        void _setValue(const QString &name, void *p);
+        void _setValue(const QString &name, void *p) const;
 
-        QJsonObject ToJson(const QStringList &without = {});
+        [[nodiscard]] QJsonObject ToJson(const QStringList &without = {}) const;
 
-        QByteArray ToJsonBytes();
+        [[nodiscard]] QByteArray ToJsonBytes() const;
 
         void FromJson(QJsonObject object);
 
