@@ -1,11 +1,10 @@
 #include "QtExtKeySequenceEdit.h"
 
 QtExtKeySequenceEdit::QtExtKeySequenceEdit(QWidget *parent)
-        : QKeySequenceEdit(parent) {
+    : QKeySequenceEdit{parent} {
 }
 
-QtExtKeySequenceEdit::~QtExtKeySequenceEdit() {
-}
+QtExtKeySequenceEdit::~QtExtKeySequenceEdit() = default;
 
 void QtExtKeySequenceEdit::keyPressEvent(QKeyEvent *pEvent) {
     QKeySequenceEdit::keyPressEvent(pEvent);

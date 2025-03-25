@@ -19,6 +19,7 @@
 #endif
 
 #include <cmath>
+#include <utility>
 
 namespace NekoGui_ConfigItem {
 
@@ -28,7 +29,7 @@ namespace NekoGui_ConfigItem {
     }
 
     QString JsonStore::_name(void *p) {
-        for (const auto &_item: _map) {
+        for (const auto &_item: std::as_const(_map)) {
             if (_item->ptr == p) return _item->name;
         }
         return {};
@@ -109,18 +110,21 @@ namespace NekoGui_ConfigItem {
     }
 
     void JsonStore::FromJson(QJsonObject object) {
-        for (const auto &key: object.keys()) {
-            if (_map.count(key) == 0) {
+        const auto keys = object.keys();
+        for (const auto &key: std::as_const(keys)) {
+            const auto itemIt = _map.find(key);
+            if (itemIt == _map.end()) {
                 continue;
             }
 
+            auto * item = itemIt->get();
+            if (!item) {
+                continue; // deliberately ignored
+            }
+
             auto value = object[key];
-            auto item = _map[key].get();
 
-            if (item == nullptr)
-                continue; // 故意忽略
-
-            // 根据类型修改ptr的内容
+            // Modify item content according to the type
             switch (item->type) {
                 case itemType::string:
                     if (value.type() != QJsonValue::String) {
@@ -167,7 +171,9 @@ namespace NekoGui_ConfigItem {
             }
         }
 
-        if (callback_after_load != nullptr) callback_after_load();
+        if (callback_after_load) {
+            callback_after_load();
+        }
     }
 
     void JsonStore::FromJsonBytes(const QByteArray &data) {
@@ -175,7 +181,7 @@ namespace NekoGui_ConfigItem {
         auto document = QJsonDocument::fromJson(data, &error);
 
         if (error.error != QJsonParseError::NoError) {
-            qDebug() << "QJsonParseError" << error.errorString();
+            qWarning() << "QJsonParseError: (" << error.error << ") " << error.errorString();
             return;
         }
 
@@ -442,7 +448,7 @@ namespace NekoGui {
 
     short isAdminCache = -1;
 
-    // IsAdmin 主要判断：有无权限启动 Tun
+    // IsAdmin: check if Tun is permitted to start
     bool IsAdmin() {
         if (isAdminCache >= 0) return isAdminCache;
 

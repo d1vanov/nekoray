@@ -1,11 +1,13 @@
+#pragma once
+
 #include <QKeySequenceEdit>
 
 class QtExtKeySequenceEdit : public QKeySequenceEdit {
 public:
-    QtExtKeySequenceEdit(QWidget *parent);
+    explicit QtExtKeySequenceEdit(QWidget *parent);
 
-    ~QtExtKeySequenceEdit();
+    ~QtExtKeySequenceEdit() override;
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *pEvent);
+    void keyPressEvent(QKeyEvent *pEvent) override;
 };
