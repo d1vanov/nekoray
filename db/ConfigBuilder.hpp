@@ -44,16 +44,17 @@ namespace NekoGui {
         QJsonArray outbounds;
     };
 
-    std::shared_ptr<BuildConfigResult> BuildConfig(const std::shared_ptr<ProxyEntity> &ent, bool forTest, bool forExport);
+    [[nodiscard]] std::shared_ptr<BuildConfigResult> BuildConfig(const std::shared_ptr<ProxyEntity> &ent,
+                                                                 bool forTest, bool forExport);
 
     void BuildConfigSingBox(const std::shared_ptr<BuildConfigStatus> &status);
 
-    QString BuildChain(int chainId, const std::shared_ptr<BuildConfigStatus> &status);
+    [[nodiscard]] QString BuildChain(int chainId, const std::shared_ptr<BuildConfigStatus> &status);
 
-    QString BuildChainInternal(int chainId, const QList<std::shared_ptr<ProxyEntity>> &ents,
-                               const std::shared_ptr<BuildConfigStatus> &status);
+    [[nodiscard]] QString BuildChainInternal(int chainId, const QList<std::shared_ptr<ProxyEntity>> &ents,
+                                             const std::shared_ptr<BuildConfigStatus> &status);
 
-    QString WriteVPNSingBoxConfig();
+    [[nodiscard]] QString WriteVPNSingBoxConfig();
 
-    QString WriteVPNLinuxScript(const QString &configPath);
+    [[nodiscard]] QString WriteVPNLinuxScript(const QString &configPath);
 } // namespace NekoGui
