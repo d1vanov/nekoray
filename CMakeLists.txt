@@ -6,6 +6,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # WINDOWS PDB FILE
 if (WIN32)
@@ -22,11 +23,11 @@ endif ()
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network Svg LinguistTools)
 
 if (NKR_CROSS)
-    set_property(TARGET Qt5::moc PROPERTY IMPORTED_LOCATION /usr/bin/moc)
-    set_property(TARGET Qt5::uic PROPERTY IMPORTED_LOCATION /usr/bin/uic)
-    set_property(TARGET Qt5::rcc PROPERTY IMPORTED_LOCATION /usr/bin/rcc)
-    set_property(TARGET Qt5::lrelease PROPERTY IMPORTED_LOCATION /usr/bin/lrelease)
-    set_property(TARGET Qt5::lupdate PROPERTY IMPORTED_LOCATION /usr/bin/lupdate)
+    set_property(TARGET Qt${QT_VERSION_MAJOR}::moc PROPERTY IMPORTED_LOCATION /usr/bin/moc)
+    set_property(TARGET Qt${QT_VERSION_MAJOR}::uic PROPERTY IMPORTED_LOCATION /usr/bin/uic)
+    set_property(TARGET Qt${QT_VERSION_MAJOR}::rcc PROPERTY IMPORTED_LOCATION /usr/bin/rcc)
+    set_property(TARGET Qt${QT_VERSION_MAJOR}::lrelease PROPERTY IMPORTED_LOCATION /usr/bin/lrelease)
+    set_property(TARGET Qt${QT_VERSION_MAJOR}::lupdate PROPERTY IMPORTED_LOCATION /usr/bin/lupdate)
 endif ()
 
 #### Platform Variables ####
@@ -93,7 +94,7 @@ endif ()
 if (NKR_NO_ZXING)
     nkr_add_compile_definitions(NKR_NO_ZXING)
 else ()
-    find_package(ZXing CONFIG REQUIRED)
+    find_package(ZXing CONFIG REQUIRED VERSION 2.2.0)
     list(APPEND NKR_EXTERNAL_TARGETS ZXing::ZXing)
 endif ()
 
