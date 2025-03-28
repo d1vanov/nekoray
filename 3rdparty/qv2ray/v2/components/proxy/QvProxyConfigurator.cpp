@@ -13,6 +13,8 @@
 #include <vector>
 #endif
 
+#include <utility>
+
 #include <QStandardPaths>
 #include <QProcess>
 
@@ -283,7 +285,8 @@ namespace Qv2ray::components::proxy {
         // Configure HTTP Proxies for HTTP, FTP and HTTPS
         if (hasHTTP) {
             // iterate over protocols...
-            for (const auto &protocol: QStringList{"http", "ftp", "https"}) {
+            const auto protocols = QStringList{"http", "ftp", "https"};
+            for (const auto &protocol: std::as_const(protocols)) {
                 // for GNOME:
                 {
                     actions << ProcessArgument{"gsettings",
@@ -349,11 +352,11 @@ namespace Qv2ray::components::proxy {
         // note: do not use std::all_of / any_of / none_of,
         // because those are short-circuit and cannot guarantee atomicity.
         QList<bool> results;
-        for (const auto &action: actions) {
+        for (const auto &action: std::as_const(actions)) {
             // execute and get the code
             const auto returnCode = QProcess::execute(action.first, action.second);
             // print out the commands and result codes
-            DEBUG(QStringLiteral("[%1] Program: %2, Args: %3").arg(returnCode).arg(action.first).arg(action.second.join(";")));
+            DEBUG(QStringLiteral("[%1] Program: %2, Args: %3").arg(returnCode).arg(action.first).arg(action.second.join(";"))); // NOLINT
             // give the code back
             results << (returnCode == QProcess::NormalExit);
         }
@@ -419,7 +422,7 @@ namespace Qv2ray::components::proxy {
         }
 
         // Execute the Actions
-        for (const auto &action: actions) {
+        for (const auto &action: std::as_const(actions)) {
             // execute and get the code
             const auto returnCode = QProcess::execute(action.first, action.second);
             // print out the commands and result codes

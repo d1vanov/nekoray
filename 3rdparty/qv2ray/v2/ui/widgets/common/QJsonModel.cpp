@@ -27,6 +27,8 @@
 #include <QDebug>
 #include <QFile>
 
+#include <utility>
+
 QJsonTreeItem::QJsonTreeItem(QJsonTreeItem *parent) {
     mParent = parent;
 }
@@ -83,12 +85,14 @@ QJsonValue::Type QJsonTreeItem::type() const {
 }
 
 QJsonTreeItem *QJsonTreeItem::load(const QJsonValue &value, QJsonTreeItem *parent) {
-    QJsonTreeItem *rootItem = new QJsonTreeItem(parent);
+    auto *rootItem = new QJsonTreeItem(parent);
     rootItem->setKey("root");
 
     if (value.isObject()) {
         // Get all QJsonValue childs
-        for (QString key: value.toObject().keys()) {
+        const auto obj = value.toObject();
+        const auto keys = obj.keys();
+        for (const QString &key: std::as_const(keys)) {
             QJsonValue v = value.toObject().value(key);
             QJsonTreeItem *child = load(v, rootItem);
             child->setKey(key);
@@ -99,7 +103,8 @@ QJsonTreeItem *QJsonTreeItem::load(const QJsonValue &value, QJsonTreeItem *paren
         // Get all QJsonValue childs
         int index = 0;
 
-        for (QJsonValue v: value.toArray()) {
+        const auto array = value.toArray();
+        for (const QJsonValue &v: std::as_const(array)) {
             QJsonTreeItem *child = load(v, rootItem);
             child->setKey(QString::number(index));
             child->setType(v.type());

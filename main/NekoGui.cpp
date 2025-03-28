@@ -356,7 +356,7 @@ namespace NekoGui {
     }
 
     QString Routing::DisplayRouting() const {
-        return QStringLiteral("[Proxy] %1\n[Proxy] %2\n[Direct] %3\n[Direct] %4\n[Block] %5\n[Block] %6\n[Default Outbound] %7\n[DNS] %8")
+        return QStringLiteral("[Proxy] %1\n[Proxy] %2\n[Direct] %3\n[Direct] %4\n[Block] %5\n[Block] %6\n[Default Outbound] %7\n[DNS] %8") // NOLINT
             .arg(SplitLinesSkipSharp(proxy_domain).join(","), 10)
             .arg(SplitLinesSkipSharp(proxy_ip).join(","), 10)
             .arg(SplitLinesSkipSharp(direct_domain).join(","), 10)
@@ -391,9 +391,12 @@ namespace NekoGui {
     }
 
     QString ExtraCore::Get(const QString &id) const {
-        auto obj = QString2QJsonObject(core_map);
-        for (const auto &c: obj.keys()) {
-            if (c == id) return obj[id].toString();
+        const auto obj = QString2QJsonObject(core_map);
+        const auto keys = obj.keys();
+        for (const auto &c: std::as_const(keys)) {
+            if (c == id) {
+                return obj[id].toString();
+            }
         }
         return "";
     }
@@ -429,9 +432,12 @@ namespace NekoGui {
         search << "/usr/share/sing-box";
         search << "/usr/lib/nekobox";
         search << "/usr/share/nekobox";
-        for (const auto &dir: search) {
-            if (dir.isEmpty()) continue;
-            QFileInfo asset(dir + "/" + name);
+        for (const auto &dir: std::as_const(search)) {
+            if (dir.isEmpty()) {
+                continue;
+            }
+
+            QFileInfo asset{dir + "/" + name};
             if (asset.exists()) {
                 return asset.absoluteFilePath();
             }
