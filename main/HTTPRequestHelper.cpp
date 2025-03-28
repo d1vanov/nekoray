@@ -30,9 +30,12 @@ namespace NekoGui_network {
                 return NekoHTTPResponse{QObject::tr("Request with proxy but no profile started.")};
             }
         }
-        if (accessManager.proxy().type() == QNetworkProxy::Socks5Proxy) {
-            auto cap = accessManager.proxy().capabilities();
-            accessManager.proxy().setCapabilities(cap | QNetworkProxy::HostNameLookupCapability);
+
+        auto proxy = accessManager.proxy();
+        if (proxy.type() == QNetworkProxy::Socks5Proxy) {
+            auto cap = proxy.capabilities();
+            proxy.setCapabilities(cap | QNetworkProxy::HostNameLookupCapability);
+            accessManager.setProxy(proxy);
         }
         // Set attribute
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 9, 0))
