@@ -326,9 +326,9 @@ class BarcodeReader : public QObject, private ReaderOptions
 
 public:
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-	BarcodeReader(QObject* parent = nullptr) : QAbstractVideoFilter(parent) {}
+	explicit BarcodeReader(QObject* parent = nullptr) : QAbstractVideoFilter(parent) {}
 #else
-	BarcodeReader(QObject* parent = nullptr) : QObject(parent) {}
+	explicit BarcodeReader(QObject* parent = nullptr) : QObject(parent) {}
 #endif
 
 	// TODO: find out how to properly expose QFlags to QML

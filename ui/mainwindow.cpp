@@ -374,7 +374,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         QString name;
         auto selected = get_now_selected_list();
         if (!selected.isEmpty()) {
-            auto ent = selected.first();
+            const auto & ent = selected.first();
             name = ent->bean->DisplayCoreType();
         }
         ui->menu_export_config->setVisible(name == software_core_name);
@@ -1326,8 +1326,8 @@ void MainWindow::on_menu_scan_qr_triggered() {
 
     show();
 
-    auto hints = DecodeHints()
-                     .setFormats(BarcodeFormat::QRCode)
+    auto hints = ReaderOptions()
+                     .setFormats(ZXing::BarcodeFormat::QRCode)
                      .setTryRotate(false)
                      .setBinarizer(Binarizer::FixedThreshold);
 
