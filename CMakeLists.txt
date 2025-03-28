@@ -8,13 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# WINDOWS PDB FILE
-if (WIN32)
-    if (MSVC)
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
-        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
-    endif ()
-endif ()
+option(BUILD_TRANSLATIONS "Build translations" ON)
 
 # Find Qt
 if (NOT QT_VERSION_MAJOR)
@@ -272,22 +266,24 @@ set_target_properties(nekobox PROPERTIES
 
 # Target Source Translations
 
-set(TS_FILES
+if (BUILD_TRANSLATIONS)
+    set(TS_FILES
         translations/zh_CN.ts
         translations/fa_IR.ts
         translations/ru_RU.ts
-)
-set(LUPDATE_OPTIONS
+    )
+    set(LUPDATE_OPTIONS
         -locations none -no-obsolete
-)
-if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_lupdate(nekobox TS_FILES ${TS_FILES} OPTIONS ${LUPDATE_OPTIONS})
-    qt_add_lrelease(nekobox TS_FILES ${TS_FILES} QM_FILES_OUTPUT_VARIABLE QM_FILES)
-else ()
-    qt5_create_translation(QM_FILES ${PROJECT_SOURCES} ${TS_FILES} OPTIONS ${LUPDATE_OPTIONS})
-endif ()
-configure_file(translations/translations.qrc ${CMAKE_BINARY_DIR} COPYONLY)
-target_sources(nekobox PRIVATE ${CMAKE_BINARY_DIR}/translations.qrc)
+    )
+    if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+        qt_add_lupdate(nekobox TS_FILES ${TS_FILES} OPTIONS ${LUPDATE_OPTIONS})
+        qt_add_lrelease(nekobox TS_FILES ${TS_FILES} QM_FILES_OUTPUT_VARIABLE QM_FILES)
+    else ()
+        qt5_create_translation(QM_FILES ${PROJECT_SOURCES} ${TS_FILES} OPTIONS ${LUPDATE_OPTIONS})
+    endif ()
+    configure_file(translations/translations.qrc ${CMAKE_BINARY_DIR} COPYONLY)
+    target_sources(nekobox PRIVATE ${CMAKE_BINARY_DIR}/translations.qrc)
+endif()
 
 # Target Link
 

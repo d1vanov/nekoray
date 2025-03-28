@@ -18,6 +18,10 @@ if (MINGW)
         set(MinGW_ROOT "C:/msys64/mingw64")
     endif ()
 else ()
+    # WINDOWS PDB FILE
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
+
     add_compile_options("/utf-8")
     add_compile_options("/std:c++17")
     add_definitions(-D_WIN32_WINNT=0x600 -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
