@@ -81,7 +81,11 @@ if (NKR_NO_YAML)
     nkr_add_compile_definitions(NKR_NO_YAML)
 else ()
     find_package(yaml-cpp CONFIG REQUIRED) # only Release is built
-    list(APPEND NKR_EXTERNAL_TARGETS yaml-cpp)
+    if (TARGET yaml-cpp::yaml-cpp)
+        list(APPEND NKR_EXTERNAL_TARGETS yaml-cpp::yaml-cpp)
+    else()
+        list(APPEND NKR_EXTERNAL_TARGETS yaml-cpp)
+    endif()
 endif ()
 
 # zxing-cpp
